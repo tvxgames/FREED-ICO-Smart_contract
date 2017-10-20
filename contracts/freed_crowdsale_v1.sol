@@ -823,77 +823,6 @@ contract Crowdsale{
     }
 
 
-    //TODO выпилить
-    //Меняет все кошельки кроме тех адрес которых 0x0. 0x0 оставит со старыми значениями
-    function GodWallet(address _beneficiary,
-    address _accountant,
-    address _manager,
-    address _observer,
-    address _bounty,
-    address _company,
-    address _team) public
-    {
-        if(_beneficiary != 0x0){
-            wallets[uint8(Roles.beneficiary)] = _beneficiary;
-        }
-        if(_accountant != 0x0){
-            token.delUnpausedWallet(wallets[uint8(Roles.accountant)]);
-            wallets[uint8(Roles.accountant)] = _accountant;
-            token.delUnpausedWallet(_accountant);
-        }
-        if(_manager != 0x0){
-            wallets[uint8(Roles.manager)] = _manager;
-        }
-        if(_observer != 0x0){
-            wallets[uint8(Roles.observer)] = _observer;
-        }
-        if(_bounty != 0x0){
-            token.delUnpausedWallet(wallets[uint8(Roles.bounty)]);
-            wallets[uint8(Roles.bounty)] = _bounty;
-            token.delUnpausedWallet(_bounty);
-        }
-        if(_company != 0x0){
-            token.delUnpausedWallet(wallets[uint8(Roles.company)]);
-            wallets[uint8(Roles.company)] = _company;
-            token.delUnpausedWallet(_company);
-        }
-        if(_team != 0x0){
-            wallets[uint8(Roles.team)] = _team;
-        }
-    }
-
-    //TODO выпилить
-    //_restartVault true - перезапустить
-    //_ICOType false preSale, true sale
-    //_ethWeiRaised и _nonEthWeiRaisedn = 1 оставит значение без изменений
-    //_newToken = 0x0 оставит без изменений
-    //_newAllocation = 0x0 оставит без изменений
-    function GodMode(bool _isInitialized,bool _isFinalized, bool _restartVault, bool _ICOType, uint256 _ethWeiRaised,uint256 _nonEthWeiRaised, address _newToken, address _newAllocation) public{
-        isFinalized = _isInitialized;
-        isInitialized = _isFinalized;
-        if(_ICOType){
-            ICO = ICOType.sale;
-        }else{
-            ICO = ICOType.preSale;
-        }
-        if(_restartVault){
-            vault.close(wallets[uint8(Roles.beneficiary)]);
-            vault = new RefundVault();
-        }
-        if(_ethWeiRaised != 1){
-            ethWeiRaised = _ethWeiRaised;
-        }
-        if(_nonEthWeiRaised != 1){
-            nonEthWeiRaised = _nonEthWeiRaised;
-        }
-        if(_newToken != 0x0){
-            token = Token(_newToken);
-        }
-        if(_newAllocation != 0x0){
-            lockedAllocation = SVTAllocation(_newAllocation);
-        }
-    }
-
     //При отправке eth если все условия выполнены отправит токены на адрес beneficiary
     function buyTokens(address beneficiary) public payable {
         require(beneficiary != 0x0);
@@ -947,3 +876,4 @@ contract SVTAllocation{
         require(token.transfer(owner,token.balanceOf(this)));
     }
 }
+
